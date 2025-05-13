@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const pomodoroTime = 5;
-const shortBreakTime = 5;
+const pomodoroTime = 25 * 60;
+const shortBreakTime = 5 * 60;
 const longBreakTime = 15 * 60;
 
 function App() {
@@ -37,10 +37,10 @@ function App() {
 
         if (!isPause && timer === 0) {
             setPause(true);
-            showNotification(
-                isPomodoro ? "Pomodoro Complete!" : "Break Over!",
-                isPomodoro ? "Time to take a short break." : "Time to get back to work!"
-            );
+            // showNotification(
+            //     isPomodoro ? "Pomodoro Complete!" : "Break Over!",
+            //     isPomodoro ? "Time to take a short break." : "Time to get back to work!"
+            // );
             // playSound();
         }
 
