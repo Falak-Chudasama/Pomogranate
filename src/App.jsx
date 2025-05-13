@@ -40,10 +40,10 @@ function App() {
 
         if (!isPause && timer === 0) {
             setPause(true);
-            // showNotification(
-            //     isPomodoro ? "Pomodoro Complete!" : "Break Over!",
-            //     isPomodoro ? "Time to take a short break." : "Time to get back to work!"
-            // );
+            showNotification(
+                isPomodoro ? "Pomodoro Complete!" : "Break Over!",
+                isPomodoro ? "Time to take a short break." : "Time to get back to work!"
+            );
             if (isPomodoro) {
                 missionPassedSound();
             }
@@ -93,71 +93,25 @@ function App() {
     };
 
     return (
-        <div className="w-full h-screen bg-gradient-to-br from-rose-100 via-pink-200 to-red-200 flex items-center justify-center font-sans">
-            <div className="bg-white/70 backdrop-blur-md border border-pink-200 p-10 rounded-3xl shadow-2xl flex flex-col items-center space-y-6 max-w-sm w-full">
-                <h1 className="text-4xl font-bold text-rose-600 tracking-wide drop-shadow-sm">
-                    Pomogranate 🍅
+        <div className='w-full h-screen bg-gradient-to-br from-red-100 to-pink-200 flex items-center justify-center'>
+            <div className='bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center space-y-6 max-w-sm w-full'>
+                <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
+                    {isPomodoro ? "Pomodoro" : "Break"}
                 </h1>
-                <p className="text-sm text-rose-700 font-medium tracking-wide">
-                    {isPomodoro ? "Focus Time" : "Break Time"}
+                <p className="text-md text-gray-600 font-medium">
+                    Completed Cycles: <span className="font-semibold text-gray-800">{cycles}</span>
                 </p>
-                <p className="text-sm text-pink-600">
-                    🍇 Cycles Completed:{" "}
-                    <span className="font-bold text-rose-800">{cycles}</span>
-                </p>
-                <h1 className="text-7xl font-mono text-rose-800 tracking-tight drop-shadow-lg">
+                <h1 className='text-6xl font-mono text-gray-900'>
                     {formatTime(timer)}
                 </h1>
                 <button
-                    className={`mt-4 px-5 py-2 text-white font-bold text-lg rounded-full shadow-md transition duration-300 ${!isPause
-                            ? "bg-rose-500 hover:bg-rose-600"
-                            : timer === 0
-                                ? isPomodoro
-                                    ? "bg-pink-500 hover:bg-pink-600"
-                                    : "bg-red-500 hover:bg-red-600"
-                                : "bg-pink-400 hover:bg-pink-500"
-                        }`}
-                    onClick={
-                        !isPause
-                            ? handlePause
-                            : timer === 0
-                                ? isPomodoro
-                                    ? switchToBreak
-                                    : switchToPomo
-                                : handleResume
-                    }
-                >
-                    {!isPause
-                        ? "Pause ⏸️"
-                        : timer === 0
-                            ? isPomodoro
-                                ? "Take a Break ☕"
-                                : "Start Pomodoro 🎯"
-                            : "Resume"}
+                    className={`mt-5 px-4 py-1 text-white font-semibold rounded-2xl shadow-md transition duration-300 ${!isPause ? "bg-red-500 hover:bg-red-600" : timer === 0 ? isPomodoro ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}`}
+                    onClick={!isPause ? handlePause : timer === 0 ? isPomodoro ? switchToBreak : switchToPomo : handleResume}>
+                    {!isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break ☕" : "StartPomodoro 🎯" : "Resume"}
                 </button>
             </div>
         </div>
     );
-    // return (
-    //     <div className='w-full h-screen bg-gradient-to-br from-red-100 to-pink-200 flex items-center justify-center'>
-    //         <div className='bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center space-y-6 max-w-sm w-full'>
-    //             <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
-    //                 {isPomodoro ? "Pomodoro" : "Break"}
-    //             </h1>
-    //             <p className="text-md text-gray-600 font-medium">
-    //                 Completed Cycles: <span className="font-semibold text-gray-800">{cycles}</span>
-    //             </p>
-    //             <h1 className='text-6xl font-mono text-gray-900'>
-    //                 {formatTime(timer)}
-    //             </h1>
-    //             <button
-    //                 className={`mt-5 px-4 py-1 text-white font-semibold rounded-2xl shadow-md transition duration-300 ${!isPause ? "bg-red-500 hover:bg-red-600" : timer === 0 ? isPomodoro ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}`}
-    //                 onClick={!isPause ? handlePause : timer === 0 ? isPomodoro ? switchToBreak : switchToPomo : handleResume}>
-    //                 {!isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break ☕" : "StartPomodoro 🎯" : "Resume"}
-    //             </button>
-    //         </div>
-    //     </div>
-    // );
 }
 
 export default App;
