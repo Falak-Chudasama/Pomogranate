@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 
-const pomodoroTime = 25 * 60;
-const shortBreakTime = 5 * 60;
-const longBreakTime = 15 * 60;
+const pomodoroTime = 5;
+const shortBreakTime = 5;
+const longBreakTime = 5;
+// const pomodoroTime = 25 * 60;
+// const shortBreakTime = 5 * 60;
+// const longBreakTime = 15 * 60;
 
 function App() {
     const [isPause, setPause] = useState(false);
@@ -22,10 +25,10 @@ function App() {
         }
     };
 
-    // const playSound = () => {
-    //     const sound = new Audio('../assets/audio.mp3');
-    //     sound.play();
-    // };
+    const missionPassedSound = () => {
+        const sound = new Audio('../assets/mission-passed-sound.mp3');
+        sound.play();
+    };
 
     useEffect(() => {
         let interval = null;
@@ -41,7 +44,9 @@ function App() {
             //     isPomodoro ? "Pomodoro Complete!" : "Break Over!",
             //     isPomodoro ? "Time to take a short break." : "Time to get back to work!"
             // );
-            // playSound();
+            if (isPomodoro) {
+                missionPassedSound();
+            }
         }
 
         return () => clearInterval(interval);
