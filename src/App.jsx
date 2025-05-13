@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
 
-const pomodoroTime = 5;
-const shortBreakTime = 5;
-const longBreakTime = 5;
-// const pomodoroTime = 25 * 60;
-// const shortBreakTime = 5 * 60;
-// const longBreakTime = 15 * 60;
+const pomodoroTime = 25 * 60;
+const shortBreakTime = 5 * 60;
+const longBreakTime = 15 * 60;
 
 function App() {
-    const [isPause, setPause] = useState(false);
+    const [isPause, setPause] = useState(true);
     const [timer, setTimer] = useState(pomodoroTime);
     const [isPomodoro, setPomodoro] = useState(true);
     const [cycles, setCycles] = useState(0);
@@ -107,7 +104,7 @@ function App() {
                 <button
                     className={`mt-5 px-4 py-1 text-white font-semibold rounded-2xl shadow-md transition duration-300 ${!isPause ? "bg-red-500 hover:bg-red-600" : timer === 0 ? isPomodoro ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}`}
                     onClick={!isPause ? handlePause : timer === 0 ? isPomodoro ? switchToBreak : switchToPomo : handleResume}>
-                    {!isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break ☕" : "StartPomodoro 🎯" : "Resume"}
+                    {!isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break ☕" : "Start Pomodoro 🎯" : "Resume"}
                 </button>
             </div>
         </div>
