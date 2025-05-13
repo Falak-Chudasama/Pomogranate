@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const pomodoroTime = 25 * 60;
-const shortBreakTime = 5 * 60;
+const pomodoroTime = 5;
+const shortBreakTime = 5;
 const longBreakTime = 15 * 60;
 
 function App() {
