@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 
-const pomodoroTime = 25 * 60;
-const shortBreakTime = 5 * 60;
-const longBreakTime = 15 * 60;
+const pomodoroTimeMinutes = 25;
+const shortBreakTimeMinutes = 5;
+const longBreakTimeMinutes = 15;
+
+const pomodoroTime = pomodoroTimeMinutes * 60;
+const shortBreakTime = shortBreakTimeMinutes * 60;
+const longBreakTime = longBreakTimeMinutes * 60;
 
 function App() {
     const [isPause, setPause] = useState(true);
@@ -73,7 +77,7 @@ function App() {
         return () => clearInterval(interval);
     }, [isPause, timer, isPomodoro]);
 
-    const handleButtonClick = () => {
+    const handleMainButtonClick = () => {
         clickSound();
 
         if (!isPause) {
@@ -87,7 +91,22 @@ function App() {
         } else {
             handleResume();
         }
-    }
+    };
+
+    const handleResetButtonClick = () => {
+        clickSound();
+        handlePause();
+
+        if (isPomodoro) {
+            setTimer(pomodoroTime);
+        } else {
+            if (cycles === 3) {
+                setTimer(longBreakTime);
+            } else {
+                setTimer(shortBreakTime);
+            }
+        }
+    };
 
     const switchToBreak = () => {
         setPause(false);
@@ -101,8 +120,9 @@ function App() {
             return cycle + 1;
         });
     };
-
+    
     const switchToPomo = () => {
+        localStorage.setItem('cycles', cycles);
         setPause(false);
         setPomodoro(true);
         setTimer(pomodoroTime);
@@ -153,15 +173,24 @@ function App() {
                 <h1 className='text-6xl font-pricedown text-purple-950'>
                     {formatTime(timer)}
                 </h1>
-                <button
-                    // className={`vc-button mt-5 px-4 py-1 text-white font-semibold font-mono shadow-md transition duration-300 ${ isPomodoro && timer === pomodoroTime ? "bg-green-500 hover:bg-green-600" : !isPause ? "bg-red-500 hover:bg-red-600" : timer === 0 ? isPomodoro ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}`}
-                    className={`vc-button mt-5 px-4 py-1 text-white font-semibold font-mono shadow-md transition duration-300 transform bg-pink-700 hover:bg-pink-800`}
-                    onClick={ handleButtonClick }
-                    style={{
-                        clipPath: 'polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)',
-                    }}>
-                    { isPomodoro && timer === pomodoroTime ? "Start Pomodoro" : !isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break" : "Start Pomodoro" : "Resume" }
-                </button>
+                <div className="flex justify-center items-center gap-2">
+                    <button
+                        className={`vc-button mt-5 px-2 py-1 text-white font-semibold font-mono shadow-md transition duration-300 transform bg-pink-700 hover:bg-pink-800`}
+                        onClick={ handleMainButtonClick }
+                        style={{
+                            clipPath: 'polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)',
+                        }}>
+                        { isPomodoro && timer === pomodoroTime ? "Start Pomodoro" : !isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break" : "Start Pomodoro" : "Resume" }
+                    </button>
+                    <button
+                        className={`vc-button mt-5 px-2 py-1 text-white font-semibold font-mono shadow-md transition duration-300 transform bg-purple-700 hover:bg-purple-800`}
+                        onClick={ handleResetButtonClick }
+                        style={{
+                            clipPath: 'polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)',
+                        }}>
+                        Reset
+                    </button>
+                </div>
             </div>
         </div>
     );
