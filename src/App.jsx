@@ -26,7 +26,7 @@ function App() {
     };
 
     const missionPassedSound = () => {
-        const sound = new Audio("../public/mission-pass-sound.mp3");
+        const sound = new Audio("../mission-pass-sound.mp3");
         sound.play();
     };
 
