@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 
-const pomodoroTime = 25 * 60;
-const shortBreakTime = 5 * 60;
-const longBreakTime = 15 * 60;
+const pomodoroTime = 2;
+const shortBreakTime = 5;
+const longBreakTime = 15;
+// const pomodoroTime = 25 * 60;
+// const shortBreakTime = 5 * 60;
+// const longBreakTime = 15 * 60;
 
 function App() {
     const [isPause, setPause] = useState(true);
