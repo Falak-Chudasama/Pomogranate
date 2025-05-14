@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-const pomodoroTime = 2;
-const shortBreakTime = 5;
+const pomodoroTime = 5;
+const shortBreakTime = 10;
 const longBreakTime = 15;
 // const pomodoroTime = 25 * 60;
 // const shortBreakTime = 5 * 60;
@@ -12,6 +12,7 @@ function App() {
     const [timer, setTimer] = useState(pomodoroTime);
     const [isPomodoro, setPomodoro] = useState(true);
     const [cycles, setCycles] = useState(0);
+    const [timeRunningOutSound, setTimeRunningOutSound] = useState(null);
 
     useEffect(() => {
         if (Notification.permission !== "granted") {
@@ -30,8 +31,28 @@ function App() {
         sound.play();
     };
 
+    const clickSound = () => {
+        const sound = new Audio("../click-sound.mp3");
+        sound.play();
+    };
+
+    const playTimeRunningOutSound = () => {
+        const sound = new Audio("../time-running-out-sound.mp3");
+        setTimeRunningOutSound(sound);
+        sound.play();
+    };
+
+    const stopTimeRunningOutSound = () => {
+        timeRunningOutSound.pause();
+    };
+
     useEffect(() => {
         let interval = null;
+
+        if (!isPomodoro && timer === 5) {
+            playTimeRunningOutSound();
+        }
+
         if (!isPause && timer > 0) {
             interval = setInterval(() => {
                 setTimer((prevTimer) => prevTimer - 1);
@@ -41,16 +62,35 @@ function App() {
         if (!isPause && timer === 0) {
             setPause(true);
             showNotification(
-                isPomodoro ? "Pomodoro Complete!" : "Break Over!",
+                isPomodoro ? "Mission Passed!" : "Break Over!",
                 isPomodoro ? "Time to take a short break." : "Time to get back to work!"
             );
             if (isPomodoro) {
                 missionPassedSound();
             }
+            if (timeRunningOutSound) {
+                stopTimeRunningOutSound();
+            }
         }
 
         return () => clearInterval(interval);
     }, [isPause, timer, isPomodoro]);
+
+    const handleButtonClick = () => {
+        clickSound();
+
+        if (!isPause) {
+            handlePause();
+        } else if (timer === 0) {
+            if (isPomodoro) {
+                switchToBreak();
+            } else {
+                switchToPomo();
+            }
+        } else {
+            handleResume();
+        }
+    }
 
     const switchToBreak = () => {
         setPause(false);
@@ -72,6 +112,9 @@ function App() {
     };
 
     const handlePause = () => {
+        if (timeRunningOutSound) {
+            stopTimeRunningOutSound();
+        }
         if (timer === 0) {
             if (isPomodoro) {
                 switchToBreak();
@@ -93,21 +136,34 @@ function App() {
     };
 
     return (
-        <div className='w-full h-screen bg-gradient-to-br from-red-100 to-pink-200 flex items-center justify-center'>
-            <div className='bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center space-y-6 max-w-sm w-full'>
-                <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
-                    {isPomodoro ? "Pomodoro" : "Break"}
-                </h1>
-                <p className="text-md text-gray-600 font-medium">
-                    Completed Cycles: <span className="font-semibold text-gray-800">{cycles}</span>
-                </p>
-                <h1 className='text-6xl font-mono text-gray-900'>
+        <div className='w-full h-screen bg-palm-trees flex items-center justify-center' style={{
+            backgroundBlendMode: "overlay",
+            backgroundColor: "rgba(255, 0, 215, 0.3)",
+            filter: "brightness(0.85)",
+        }}>
+            <div className='bg-pink-200/90 p-8 shadow-xl flex flex-col items-center space-y-6 max-w-sm w-full' 
+            style={{
+                clipPath: 'polygon(5% 0%, 95% 2%, 100% 95%, 2% 100%)',
+            }}>
+                <div className="text-center">
+                    <h1 className="text-3xl font-pricedown text-purple-950 tracking-wide">
+                        {isPomodoro ? "Pomodoro" : "Break"}
+                    </h1>
+                    <p className="text-md font-normal text-gray-600">
+                        Cycles <span className="font- text-gray-800">{cycles}</span>
+                    </p>
+                </div>
+                <h1 className='text-6xl font-pricedown text-purple-950'>
                     {formatTime(timer)}
                 </h1>
                 <button
-                    className={`mt-5 px-4 py-1 text-white font-semibold rounded-2xl shadow-md transition duration-300 ${!isPause ? "bg-red-500 hover:bg-red-600" : timer === 0 ? isPomodoro ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}`}
-                    onClick={!isPause ? handlePause : timer === 0 ? isPomodoro ? switchToBreak : switchToPomo : handleResume}>
-                    {!isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break ☕" : "Start Pomodoro 🎯" : "Resume"}
+                    // className={`vc-button mt-5 px-4 py-1 text-white font-semibold font-mono shadow-md transition duration-300 ${ isPomodoro && timer === pomodoroTime ? "bg-green-500 hover:bg-green-600" : !isPause ? "bg-red-500 hover:bg-red-600" : timer === 0 ? isPomodoro ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}`}
+                    className={`vc-button mt-5 px-4 py-1 text-white font-semibold font-mono shadow-md transition duration-300 transform bg-pink-700 hover:bg-pink-800`}
+                    onClick={ handleButtonClick }
+                    style={{
+                        clipPath: 'polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)',
+                    }}>
+                    { isPomodoro && timer === pomodoroTime ? "Start Pomodoro" : !isPause ? "Pause" : timer === 0 ? isPomodoro ? "Take Break" : "Start Pomodoro" : "Resume" }
                 </button>
             </div>
         </div>

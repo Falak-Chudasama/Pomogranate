@@ -5,7 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        pricedown: ['Pricedown', 'sans-serif']
+      },
+      backgroundImage: {
+        'palm-trees': "url('/palm-trees-bg.jpg')",
+      },
+    },
   },
   plugins: [],
 }
