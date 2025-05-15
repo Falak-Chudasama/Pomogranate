@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
-const pomodoroTimeMinutes = 50;
-const shortBreakTimeMinutes = 15;
-const longBreakTimeMinutes = 30;
+const pomodoroTimeMinutes = 25;
+const shortBreakTimeMinutes = 5;
+const longBreakTimeMinutes = 15;
 
 const pomodoroTime = pomodoroTimeMinutes * 60;
 const shortBreakTime = shortBreakTimeMinutes * 60;
