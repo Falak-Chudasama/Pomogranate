@@ -7,11 +7,21 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'logo192.png', 'logo512.png'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,jpg,mp3,otf}']
+      },
+      includeAssets: [
+        'pomogranate.ico',
+        'click-sound.mp3',
+        'mission-pass-sound.mp3',
+        'palm-trees-bg.jpg',
+        'time-running-out-sound.mp3',
+        'pricedown/pricedown.otf'
+      ],
       manifest: {
-        name: 'My React PWA',
-        short_name: 'ReactPWA',
-        description: 'My awesome React PWA App!',
+        name: 'Pomogranate',
+        short_name: 'Pomo',
+        description: 'Pomogranate is a GTA VC themed pomodoro application that works offline',
         theme_color: '#1976d2',
         background_color: '#ffffff',
         display: 'standalone',
