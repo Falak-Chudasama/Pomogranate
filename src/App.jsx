@@ -47,12 +47,12 @@ function App() {
     // Sounds 
     const playSound = (src) => {
         const sound = new Audio(src);
-        sound.play();
+        // sound.play();
     };
 
     const playTimeRunningOut = () => {
         soundRef.current = new Audio("../time-running-out-sound.mp3");
-        soundRef.current.play();
+        // soundRef.current.play();
     };
 
     const stopTimeRunningOut = () => {
@@ -86,7 +86,6 @@ function App() {
                     clearInterval(intervalRef.current);
                     stopTimeRunningOut();
                     handleTimerEnd();
-                    setTimeLeft(0);
                 } else {
                     if (remainingSeconds === 5 && !isPomodoro) playTimeRunningOut();
                     setTimeLeft(remainingSeconds);
@@ -155,27 +154,46 @@ function App() {
     };
 
     return (
-        <div className='w-full h-screen bg-gradient-to-br from-pink-300 to-purple-400 flex items-center justify-center transition-all duration-300'>
-            <div className='bg-pink-200/90 p-8 rounded-xl shadow-xl flex flex-col items-center space-y-6 max-w-sm w-full'>
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold text-purple-950 tracking-wide">
-                        {isPomodoro ? "Pomodoro" : "Break"}
-                    </h1>
-                    <p className="text-md font-normal text-gray-600">
-                        Cycles <span className="font-semibold text-gray-800">{cycles}</span>
-                    </p>
+        <div className='min-h-screen bg-gray-900 flex items-center justify-center p-4'>
+            <div className='bg-gray-800 border border-gray-700 p-8 rounded-2xl shadow-2xl flex flex-col items-center space-y-6 max-w-sm w-full'>
+                
+                <div className="text-center space-y-2">
+                    <div className="flex items-center justify-center gap-3">
+                        <div className={`w-2 h-2 rounded-full ${isPomodoro ? 'bg-red-500' : 'bg-blue-500'}`}></div>
+                        <h1 className="text-xl font-medium text-white">
+                            {isPomodoro ? "Focus Time" : "Break Time"}
+                        </h1>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-gray-400">
+                        <span className="text-sm">Cycle</span>
+                        <span className="bg-gray-700 px-2 py-1 rounded text-sm text-white">
+                            {cycles}
+                        </span>
+                    </div>
                 </div>
-                <h1 className='text-6xl font-bold text-purple-950'>
-                    {formatTime(timeLeft)}
-                </h1>
-                <div className="flex justify-center items-center gap-4">
+
+                <div className="text-center">
+                    <div className="text-6xl font-bold text-white font-mono mb-2">
+                        {formatTime(timeLeft)}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                        {isRunning ? 'RUNNING' : 'PAUSED'}
+                    </div>
+                </div>
+
+                <div className="flex gap-3">
                     <button
-                        className={`px-6 py-3 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105 bg-pink-600 hover:bg-pink-700`}
+                        className={`px-6 py-3 font-medium rounded-lg transition-colors duration-200 ${
+                            isRunning 
+                                ? 'bg-orange-600 hover:bg-orange-700 text-white' 
+                                : 'bg-green-600 hover:bg-green-700 text-white'
+                        }`}
                         onClick={handleStartPause}>
                         {isRunning ? "Pause" : "Start"}
                     </button>
+                    
                     <button
-                        className={`px-6 py-3 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105 bg-purple-600 hover:bg-purple-700`}
+                        className="px-6 py-3 font-medium rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200"
                         onClick={handleReset}>
                         Reset
                     </button>
