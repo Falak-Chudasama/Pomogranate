@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-const POMODORO = parseInt(sessionStorage.getItem('POMODORO')) || 40;
-const SHORT_BREAK = parseInt(sessionStorage.getItem('SHORT_BREAK')) || 5;
-const LONG_BREAK = parseInt(sessionStorage.getItem('LONG_BREAK')) || 15;
+const POMODORO = parseInt(sessionStorage.getItem('POMODORO')) || 60;
+const SHORT_BREAK = parseInt(sessionStorage.getItem('SHORT_BREAK')) || 15;
+const LONG_BREAK = parseInt(sessionStorage.getItem('LONG_BREAK')) || 30;
 const LONG_BREAK_INTERVAL = parseInt(sessionStorage.getItem('LONG_BREAK_INTERVAL')) || 3;
 
 function App() {
