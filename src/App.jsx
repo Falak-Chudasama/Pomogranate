@@ -62,6 +62,7 @@ function App() {
         }
     };
 
+    // side effects handlers
     useEffect(() => {
         sessionStorage.setItem('cycles', cycles);
     }, [cycles]);
@@ -71,6 +72,25 @@ function App() {
     useEffect(() => {
         sessionStorage.setItem('isPomodoro', isPomodoro);
     }, [isPomodoro]);
+
+    // key events
+    useEffect(() => {
+        const keyDownEvent = (event) => {
+            if (event.code === 'Space') {
+                if (event.ctrlKey && event.altKey) {
+                    event.preventDefault();
+                    handleReset();
+                } else {
+                    event.preventDefault();
+                    handleStartPause();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', keyDownEvent);
+
+        return () => { window.removeEventListener('keydown'); }
+    }, []);
 
     // Timer logic
     useEffect(() => {
