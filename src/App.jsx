@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
-const POMODORO = parseInt(sessionStorage.getItem('POMODORO')) || 60;
-const SHORT_BREAK = parseInt(sessionStorage.getItem('SHORT_BREAK')) || 15;
-const LONG_BREAK = parseInt(sessionStorage.getItem('LONG_BREAK')) || 30;
-const LONG_BREAK_INTERVAL = parseInt(sessionStorage.getItem('LONG_BREAK_INTERVAL')) || 3;
+const POMODORO = parseInt(localStorage.getItem('POMODORO')) || 60;
+const SHORT_BREAK = parseInt(localStorage.getItem('SHORT_BREAK')) || 15;
+const LONG_BREAK = parseInt(localStorage.getItem('LONG_BREAK')) || 30;
+const LONG_BREAK_INTERVAL = parseInt(localStorage.getItem('LONG_BREAK_INTERVAL')) || 3;
 
 function App() {
     const [pomodoro, setPomodoro] = useState(POMODORO * 60);
@@ -11,22 +11,22 @@ function App() {
     const [longBreak, setLongBreak] = useState(LONG_BREAK * 60);
 
     const [isPomodoro, setIsPomodoro] = useState(() => {
-        const isPomodoroSession = sessionStorage.getItem('isPomodoro');
+        const isPomodoroSession = localStorage.getItem('isPomodoro');
         return isPomodoroSession !== null ? isPomodoroSession === 'true' : true;
     });
     const [cycles, setCycles] = useState(() => {
-        const cyclesSession = sessionStorage.getItem('cycles');
+        const cyclesSession = localStorage.getItem('cycles');
         return cyclesSession !== null ? parseInt(cyclesSession) : 0;
     });
 
     const [isRunning, setIsRunning] = useState(false);
     const [keepNotifications, setKeepNotifications] = useState(() => {
-        const keepNotificationsSession = sessionStorage.getItem('keepNotifications');
+        const keepNotificationsSession = localStorage.getItem('keepNotifications');
         return keepNotificationsSession !== null ? keepNotificationsSession === 'true' : true;
     });
 
     const [timeLeft, setTimeLeft] = useState(() => {
-        let timeLeftSession = sessionStorage.getItem('timeLeft');
+        let timeLeftSession = localStorage.getItem('timeLeft');
         if (timeLeftSession === null) {
             return isPomodoro ? pomodoro : cycles % LONG_BREAK_INTERVAL === 0 ? longBreak : shortBreak;
         }
@@ -47,30 +47,39 @@ function App() {
     // Sounds 
     const playSound = (src) => {
         const sound = new Audio(src);
-        // sound.play();
+        sound.play();
     };
 
     const playTimeRunningOut = () => {
-        soundRef.current = new Audio("../time-running-out-sound.mp3");
-        // soundRef.current.play();
     };
 
     const stopTimeRunningOut = () => {
-        if (soundRef.current) {
-            soundRef.current.pause();
-            soundRef.current.currentTime = 0;
-        }
     };
 
     // side effects handlers
     useEffect(() => {
-        sessionStorage.setItem('cycles', cycles);
+        const today = new Date().toLocaleDateString();
+        const date = localStorage.getItem('date');
+        if (!date || date !== today) {
+            localStorage.setItem('POMODORO', POMODORO);
+            localStorage.setItem('SHORT_BREAK', SHORT_BREAK);
+            localStorage.setItem('LONG_BREAK', LONG_BREAK);
+            localStorage.setItem('LONG_BREAK_INTERVAL', LONG_BREAK_INTERVAL);
+            localStorage.setItem('isPomodoro', isPomodoro);
+            localStorage.setItem('cycles', cycles);
+            localStorage.setItem('timeLeft', timeLeft);
+            localStorage.setItem('keepNotifications', keepNotifications);
+            localStorage.setItem('date', today);
+        }
+    },[]);
+    useEffect(() => {
+        localStorage.setItem('cycles', cycles);
     }, [cycles]);
     useEffect(() => {
-        sessionStorage.setItem('timeLeft', timeLeft);
+        localStorage.setItem('timeLeft', timeLeft);
     }, [timeLeft]);
     useEffect(() => {
-        sessionStorage.setItem('isPomodoro', isPomodoro);
+        localStorage.setItem('isPomodoro', isPomodoro);
     }, [isPomodoro]);
 
     // key events
@@ -107,10 +116,9 @@ function App() {
 
                 if (remainingSeconds <= 0) {
                     clearInterval(intervalRef.current);
-                    stopTimeRunningOut();
                     handleTimerEnd();
                 } else {
-                    if (remainingSeconds === 5 && !isPomodoro) playTimeRunningOut();
+                    // if (remainingSeconds === 5 && !isPomodoro) playTimeRunningOut();
                     setTimeLeft(remainingSeconds);
                 }
             }, 1000);
@@ -123,7 +131,7 @@ function App() {
         if (keepNotifications && Notification.permission !== "granted") {
             Notification.requestPermission();
         }
-        sessionStorage.setItem('keepNotifications', keepNotifications);
+        localStorage.setItem('keepNotifications', keepNotifications);
     }, [keepNotifications]);
 
 
@@ -132,13 +140,12 @@ function App() {
         setIsRunning(false);
 
         if (isPomodoro && !isSkip) {
-            playSound("../mission-pass-sound.mp3");
             const nextBreak = (cycles + 1) % LONG_BREAK_INTERVAL === 0 ? longBreak : shortBreak;
             setTimeLeft(nextBreak);
             setIsPomodoro(false);
         } else if (!isPomodoro) {
             setCycles(prev => {
-                sessionStorage.setItem('cycles', prev + 1);
+                localStorage.setItem('cycles', prev + 1);
                 return prev + 1;
             });
             setTimeLeft(pomodoro);
@@ -162,12 +169,10 @@ function App() {
     const handleStartPause = () => {
         playSound("../click-sound.mp3");
         setIsRunning(prev => !prev);
-        if (isRunning) stopTimeRunningOut();
     };
 
     const handleReset = () => {
         playSound("../click-sound.mp3");
-        stopTimeRunningOut();
         clearInterval(intervalRef.current);
         setIsRunning(false);
         if (isPomodoro) {
