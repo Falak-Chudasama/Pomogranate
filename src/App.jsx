@@ -71,7 +71,16 @@ function App() {
             localStorage.setItem('keepNotifications', keepNotifications);
             localStorage.setItem('date', today);
         }
-    },[]);
+    }, [
+        POMODORO,
+        SHORT_BREAK,
+        LONG_BREAK,
+        LONG_BREAK_INTERVAL,
+        isPomodoro,
+        cycles,
+        timeLeft,
+        keepNotifications
+    ]);
     useEffect(() => {
         localStorage.setItem('cycles', cycles);
     }, [cycles]);
