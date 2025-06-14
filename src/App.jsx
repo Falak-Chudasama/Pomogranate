@@ -75,22 +75,25 @@ function App() {
 
     // key events
     useEffect(() => {
-        const keyDownEvent = (event) => {
+        const keyUpEvent = (event) => {
             if (event.code === 'Space') {
                 if (event.ctrlKey && event.altKey) {
                     event.preventDefault();
                     handleReset();
                 } else {
+                    console.log('Start/pause pressed');
                     event.preventDefault();
                     handleStartPause();
                 }
+            } else if (event.ctrlKey && event.altKey && event.code === 'KeyS' && !isPomodoro) {
+                event.preventDefault();
+                console.log('skip pressed');
+                handleStateChange(true);
             }
         };
-
-        window.addEventListener('keydown', keyDownEvent);
-
-        return () => { window.removeEventListener('keydown'); }
-    }, []);
+        window.addEventListener('keyup', keyUpEvent);
+        return () => { window.removeEventListener('keyup', keyUpEvent); }
+    }, [isPomodoro, cycles]);
 
     // Timer logic
     useEffect(() => {
@@ -116,22 +119,24 @@ function App() {
         return () => clearInterval(intervalRef.current);
     }, [isRunning, isPomodoro]);
 
-    const handleTimerEnd = () => {
-        if (!isRunning) return;
-
-        setIsRunning(false);
-        const title = isPomodoro ? "Pomodoro Done!" : "Break Over!";
-        const body = isPomodoro ? "Time for a break." : "Back to work!";
-        if (keepNotifications && Notification.permission === "granted") {
-            new Notification(title, { body });
+    useEffect(() => {
+        if (keepNotifications && Notification.permission !== "granted") {
+            Notification.requestPermission();
         }
+        sessionStorage.setItem('keepNotifications', keepNotifications);
+    }, [keepNotifications]);
 
-        if (isPomodoro) {
+
+    // handlers
+    const handleStateChange = (isSkip = false) => {
+        setIsRunning(false);
+
+        if (isPomodoro && !isSkip) {
             playSound("../mission-pass-sound.mp3");
             const nextBreak = (cycles + 1) % LONG_BREAK_INTERVAL === 0 ? longBreak : shortBreak;
             setTimeLeft(nextBreak);
             setIsPomodoro(false);
-        } else {
+        } else if (!isPomodoro) {
             setCycles(prev => {
                 sessionStorage.setItem('cycles', prev + 1);
                 return prev + 1;
@@ -139,14 +144,19 @@ function App() {
             setTimeLeft(pomodoro);
             setIsPomodoro(true);
         }
-    };
+    }
 
-    useEffect(() => {
-        if (keepNotifications && Notification.permission !== "granted") {
-            Notification.requestPermission();
+    const handleTimerEnd = () => {
+        if (!isRunning) return;
+
+        const title = isPomodoro ? "Pomodoro Done!" : "Break Over!";
+        const body = isPomodoro ? "Time for a break." : "Back to work!";
+        if (keepNotifications && Notification.permission === "granted") {
+            new Notification(title, { body });
         }
-        sessionStorage.setItem('keepNotifications', keepNotifications);
-    }, [keepNotifications]);
+
+        handleStateChange();
+    };
 
     // Button Handlers
     const handleStartPause = () => {
