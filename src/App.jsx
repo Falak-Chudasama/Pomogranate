@@ -46,7 +46,7 @@ function App() {
 
     // Sounds 
     const playSound = (src) => {
-        const sound = new Audio(src);
+        const sound = new Audio(`/${src}.mp3`);
         sound.play();
     };
 
@@ -65,11 +65,15 @@ function App() {
             localStorage.setItem('SHORT_BREAK', SHORT_BREAK);
             localStorage.setItem('LONG_BREAK', LONG_BREAK);
             localStorage.setItem('LONG_BREAK_INTERVAL', LONG_BREAK_INTERVAL);
-            localStorage.setItem('isPomodoro', isPomodoro);
-            localStorage.setItem('cycles', cycles);
-            localStorage.setItem('timeLeft', timeLeft);
+            localStorage.setItem('isPomodoro', true);
+            localStorage.setItem('cycles', 0);
+            localStorage.setItem('timeLeft', pomodoro);
             localStorage.setItem('keepNotifications', keepNotifications);
             localStorage.setItem('date', today);
+            setCycles(0);
+            setTimeLeft(pomodoro);
+            setIsPomodoro(true);
+            setIsRunning(false);
         }
     }, [
         POMODORO,
